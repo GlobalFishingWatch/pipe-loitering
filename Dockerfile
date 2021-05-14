@@ -8,7 +8,7 @@ WORKDIR /opt/project
 # https://hub.docker.com/r/google/cloud-sdk/~/dockerfile/
 ENV CLOUD_SDK_APT_DEPS="curl gcc python-dev python-setuptools apt-transport-https lsb-release openssh-client git"
 ENV CLOUD_SDK_PIP_DEPS="crcmod"
-ENV CLOUD_SDK_VERSION="332.0.0"
+ENV CLOUD_SDK_VERSION="339.0.0"
 RUN  \
   apt-get -y update && \
   apt-get install -y $CLOUD_SDK_APT_DEPS && \
@@ -27,7 +27,7 @@ VOLUME ["/root/.config"]
 
 # Setup local application dependencies
 COPY . ${WORKDIR}
-RUN pip install -r requirements-frozen.txt
+RUN pip install -r requirements-local.txt
 
 # Setup local module
 RUN pip install -e .

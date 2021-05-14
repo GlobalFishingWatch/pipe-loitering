@@ -10,12 +10,19 @@ def calculate_avg_speed_in_knots(msgs):
         return None
 
 def calculate_avg_distance_from_shore_nm(msgs):
-    hours = calculate_total_hours(msgs)
+    msgs_with_distance = [msg for msg in msgs if msg["distance_from_shore_m"] is not None]
+
+    if not msgs_with_distance:
+        return None
+
+    hours = calculate_total_hours(msgs_with_distance)
 
     if hours:
-        return sum([msg["distance_from_shore_m"] * msg["hours"] for msg in msgs]) / hours / 1852
+        weighted_sum = sum([msg["distance_from_shore_m"] * msg["hours"] for msg in msgs_with_distance if msg["hours"]])
+        return weighted_sum / hours / 1852
     else:
-        return sum([msg["distance_from_shore_m"] for msg in msgs]) / len(msgs) / 1852
+        total_sum = sum([msg["distance_from_shore_m"] for msg in msgs_with_distance])
+        return total_sum / len(msgs_with_distance) / 1852
 
 def calculate_positions(msgs):
     position_pairs = ["{} {}".format(msg["lon"], msg["lat"]) for msg in msgs]

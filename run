@@ -1,0 +1,20 @@
+#! /bin/bash
+# docker-compose run pipeline ./main.py \
+#   --project world-fishing-827 \
+#   --temp_location gs://scratch-andres-ttl30d/loitering/temp \
+#   --source world-fishing-827.gfw_research.pipe_v20201001 \
+#   --sink world-fishing-827:scratch_andres_ttl30d.new_loitering_daily_ \
+#   --start_date 2020-01-01 \
+#   --end_date 2020-02-01 \
+
+
+docker-compose run pipeline ./main.py \
+  --project world-fishing-827 \
+  --temp_location gs://scratch-andres-ttl30d/loitering/temp \
+  --source world-fishing-827.gfw_research.pipe_v20201001 \
+  --sink world-fishing-827:scratch_andres_ttl30d.new_loitering_daily_ \
+  --start_date 2012-01-02 \
+  --end_date 2021-05-01 \
+  --runner DataflowRunner \
+  --region us-central1 \
+  --job_name andres-loitering-backfill-complete

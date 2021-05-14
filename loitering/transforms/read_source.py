@@ -16,11 +16,6 @@ SOURCE_QUERY_TEMPLATE = """
     WHERE
       DATE(_PARTITIONTIME) BETWEEN '{start_date}'
       AND '{end_date}'
-      AND ssvid IN ( '269617136',
-        '413984512',
-        '413832159',
-        '259536000',
-        '412236904')
 """
 
 class ReadSource(beam.PTransform):

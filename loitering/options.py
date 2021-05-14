@@ -7,13 +7,13 @@ class LoiteringOptions(PipelineOptions):
         required.add_argument(
             "--source",
             required=True,
-            help="Source table to read messages from, in the standard sql format PROJECT.DATASET.TABLE",
+            help="Source table to read messages from, in the standard sql format PROJECT.DATASET.TABLE. Usually, this is the pre-thinned and filtered gfw_research.pipe_vXYZ table, such as gfw_research.pipe_v20201001.",
         )
 
         required.add_argument(
             "--sink",
             required=True,
-            help="Date-sharded table prefix to write messages to, in the legacy sql format PROJECT:DATASET.TABLE",
+            help="Date-sharded table prefix to write messages to, in the legacy sql format PROJECT:DATASET.TABLE.",
         )
 
         required.add_argument(

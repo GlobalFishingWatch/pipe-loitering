@@ -10,7 +10,6 @@ from loitering.pipeline import LoiteringPipeline
 def build_pipeline_options_with_defaults(argv):
     return PipelineOptions(
         flags=argv[1:],
-        requirements_file="./requirements-frozen.txt",
         setup_file="./setup.py"
     )
 
