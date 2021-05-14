@@ -1,14 +1,16 @@
 # Loitering pipeline
 
-This repository contains the loitering pipeline, a dataflow pipeline that computes vessel loitering events
+## Introduction
 
-# Running
+This repository contains the loitering pipeline, a dataflow pipeline that computes vessel loitering events.
 
-## Dependencies
+## Development
+
+### Dependencies
 
 You just need [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/) in your machine to run the pipeline. No other dependency is required.
 
-## Setup
+### Setup
 
 The pipeline reads it's input from BigQuery, so you need to first authenticate with your google cloud account inside the docker images. To do that, you need to run this command and follow the instructions:
 
@@ -16,7 +18,7 @@ The pipeline reads it's input from BigQuery, so you need to first authenticate w
 docker-compose run pipeline gcloud auth login
 ```
 
-# License
+## License
 
 Copyright 2017 Global Fishing Watch
 
