@@ -27,7 +27,7 @@ VOLUME ["/root/.config"]
 
 # Setup local application dependencies
 COPY . ${WORKDIR}
-RUN pip install -r requirements-local.txt
+RUN pip install -r requirements-scheduler.txt
 
 # Setup local module
 RUN pip install -e .

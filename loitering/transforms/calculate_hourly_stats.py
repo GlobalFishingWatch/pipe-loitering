@@ -36,7 +36,7 @@ class CalculateHourlyStats(beam.PTransform):
     def expand(self, pcoll):
         return (
             pcoll
-            | self.group()
+            | self.group_by_seg_id_and_hourly_bucket()
             | self.convert_group_to_hourly_bucket()
             | self.calculate_total_hours()
             | self.calculate_total_distance()
@@ -44,7 +44,7 @@ class CalculateHourlyStats(beam.PTransform):
             | self.calculate_is_slow()
         )
 
-    def group(self):
+    def group_by_seg_id_and_hourly_bucket(self):
         return beam.GroupBy(
             seg_id=lambda msg: msg['seg_id'],
             hourly_bucket=lambda msg: msg["timestamp"].strftime("%Y-%m-%d-%H")

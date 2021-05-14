@@ -24,11 +24,6 @@ def calculate_avg_distance_from_shore_nm(msgs):
         total_sum = sum([msg["distance_from_shore_m"] for msg in msgs_with_distance])
         return total_sum / len(msgs_with_distance) / 1852
 
-def calculate_positions(msgs):
-    position_pairs = ["{} {}".format(msg["lon"], msg["lat"]) for msg in msgs]
-    coordinates = ",".join(position_pairs)
-    return "LINESTRING ({})".format(coordinates)
-
 
 def convert_to_loitering_daily_event(msgs):
     return {
@@ -44,7 +39,6 @@ def convert_to_loitering_daily_event(msgs):
         "start_lat": msgs[0]["lat"],
         "end_lon": msgs[-1]["lon"],
         "end_lat": msgs[-1]["lat"],
-        "positions": calculate_positions(msgs),
     }
 
 class CalculateLoiteringStats(beam.PTransform):

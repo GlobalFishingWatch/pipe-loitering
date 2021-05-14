@@ -18,6 +18,10 @@ The pipeline reads it's input from BigQuery, so you need to first authenticate w
 docker-compose run pipeline gcloud auth login
 ```
 
+### Tests
+
+There are [pytest](https://docs.pytest.org/) tests in the `tests` directory, which can be run via `docker-compose run pipeline pytest`.
+
 ## License
 
 Copyright 2017 Global Fishing Watch
