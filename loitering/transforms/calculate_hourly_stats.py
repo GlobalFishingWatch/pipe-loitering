@@ -27,7 +27,7 @@ def calculate_avg_speed_in_knots(bucket):
         return None
 
 def calculate_is_slow(bucket, slow_threshold):
-    return bucket["avg_speed_knots"] and bucket["avg_speed_knots"] < slow_threshold
+    return bucket["avg_speed_knots"] is not None and bucket["avg_speed_knots"] < slow_threshold
 
 class CalculateHourlyStats(beam.PTransform):
     def __init__(self, slow_threshold):

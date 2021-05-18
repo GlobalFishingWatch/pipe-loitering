@@ -135,6 +135,10 @@ class TestCalculateIsSlow:
         result = stats.calculate_is_slow({"avg_speed_knots": 2.5}, slow_threshold=2)
         assert not result
 
+    def test_calculate_is_slow_when_zero(self):
+        result = stats.calculate_is_slow({"avg_speed_knots": 0}, slow_threshold=2)
+        assert result
+
     def test_calculate_is_slow_when_none(self):
         result = stats.calculate_is_slow({"avg_speed_knots": None}, slow_threshold=2)
         assert not result
