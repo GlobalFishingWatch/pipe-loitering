@@ -12,10 +12,16 @@ You just need [docker](https://www.docker.com/) and [docker-compose](https://doc
 
 ### Setup
 
-The pipeline reads it's input from BigQuery, so you need to first authenticate with your google cloud account inside the docker images. To do that, you need to run this command and follow the instructions:
+The pipeline connects to various services from Google Cloud, so you need to first authenticate with your google cloud account inside the docker images. To do that, you need to run this command and follow the instructions:
 
 ```
-docker-compose run pipeline gcloud auth login
+docker-compose run pipeline gcloud auth application-default login
+```
+
+You also need to setup your Google Cloud default project to bill for those services via this command:
+
+```
+docker-compose run pipeline gcloud config set project [YOUR PROJECT]
 ```
 
 ### Tests
@@ -24,7 +30,7 @@ There are [pytest](https://docs.pytest.org/) tests in the `tests` directory, whi
 
 ## License
 
-Copyright 2017 Global Fishing Watch
+Copyright 2021 Global Fishing Watch
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
