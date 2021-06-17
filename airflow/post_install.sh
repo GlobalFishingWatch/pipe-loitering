@@ -15,7 +15,6 @@ python $AIRFLOW_HOME/utils/set_default_variables.py \
     pipeline_dataset="{{ var.value.PIPELINE_DATASET }}" \
     project_id="{{ var.value.PROJECT_ID }}" \
     source_messages_dataset="gfw_research" \
-    source_messages_table="pipe_v20201001" \
     raw_table="raw_loitering_" \
     loitering_table="loitering" \
 
