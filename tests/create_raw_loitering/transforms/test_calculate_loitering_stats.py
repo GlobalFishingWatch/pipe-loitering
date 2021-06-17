@@ -1,4 +1,4 @@
-import loitering.transforms.calculate_loitering_stats as stats
+import loitering.create_raw_loitering.transforms.calculate_loitering_stats as stats
 import pytest
 
 class TestCalculateAvgSpeedInKnots:

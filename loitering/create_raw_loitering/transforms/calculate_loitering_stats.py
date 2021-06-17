@@ -1,5 +1,5 @@
 import apache_beam as beam
-from loitering.transforms.calculate_hourly_stats import calculate_total_hours, calculate_total_distance
+from loitering.create_raw_loitering.transforms.calculate_hourly_stats import calculate_total_hours, calculate_total_distance
 
 def calculate_avg_speed_in_knots(msgs):
     hours = calculate_total_hours(msgs)

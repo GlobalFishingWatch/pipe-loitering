@@ -2,7 +2,7 @@ import apache_beam as beam
 import datetime as dt
 import time
 from types import SimpleNamespace
-import loitering.transforms.group_loitering_ranges as group
+import loitering.create_raw_loitering.transforms.group_loitering_ranges as group
 
 class TestPartitionBucketsIntoDays:
     def test_partition_buckets_into_days(self):
