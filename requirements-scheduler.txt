@@ -1,0 +1,10 @@
+# Apache beam
+apache-beam==2.28.0
+apache-beam[gcp]==2.28.0
+
+# Other infrastructure we need locally on the local environment
+jinja2
+google-cloud-bigquery
+
+# Testing
+pytest

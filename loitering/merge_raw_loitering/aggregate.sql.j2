@@ -1,0 +1,95 @@
+with
+--
+all_daily_loitering as 
+(select * from `{{ source_daily_partitioned_table }}*`),
+--
+--
+--
+
+lag_and_lead_start_and_end as (
+select  
+lag(loitering_end_timestamp, 1) over (partition by seg_id order by loitering_start_timestamp) last_loitering_end,
+lead(loitering_start_timestamp, 1) over (partition by seg_id order by loitering_start_timestamp) next_loitering_start,
+*
+from all_daily_loitering),
+
+--
+--
+--
+
+is_start_end as (
+select 
+(last_loitering_end != loitering_start_timestamp) or last_loitering_end is null as is_start,
+(next_loitering_start != loitering_end_timestamp) or next_loitering_start is null as is_end,
+*
+from lag_and_lead_start_and_end),
+--
+--
+--
+ranges as(
+select 
+lead(loitering_end_timestamp,1) over (partition by seg_id order by loitering_start_timestamp) as next_end_timestamp,
+*
+from is_start_end
+where is_start or is_end),
+--
+--
+loitering_ranges as 
+(select 
+seg_id,
+ssvid,
+loitering_start_timestamp,
+if(is_end, loitering_end_timestamp, next_end_timestamp) as loitering_end_timestamp
+from ranges
+where is_start
+),
+--
+--
+--
+loitering_stats as (
+select 
+a.ssvid ssvid,
+a.seg_id seg_id,
+a.loitering_start_timestamp loitering_start_timestamp,
+a.loitering_end_timestamp loitering_end_timestamp,
+sum(loitering_hours) loitering_hours,
+sum(tot_distance_nm) as tot_distance_nm,
+safe_divide(sum(tot_distance_nm),sum(loitering_hours)) as avg_speed_knots,
+safe_divide(sum(loitering_hours*avg_distance_from_shore_nm),sum(loitering_hours)) as avg_distance_from_shore_nm
+from loitering_ranges a
+join all_daily_loitering b
+on a.ssvid = b.ssvid
+and a.seg_id = b.seg_id
+and a.loitering_start_timestamp <= b.loitering_start_timestamp
+and a.loitering_end_timestamp >= b.loitering_end_timestamp
+group by 1,2,3,4),
+
+--
+--
+start_lat_lon as 
+(select 
+a.ssvid ssvid,
+a.seg_id seg_id,
+a.loitering_start_timestamp loitering_start_timestamp, 
+a.loitering_end_timestamp loitering_end_timestamp, 
+a.loitering_hours,
+a.tot_distance_nm,
+a.avg_speed_knots,
+a.avg_distance_from_shore_nm,
+b.start_lon start_lon, 
+b.start_lat start_lat,
+c.end_lon end_lon,
+c.end_lat end_lat
+from loitering_stats a 
+join all_daily_loitering b
+on a.loitering_start_timestamp=b.loitering_start_timestamp and a.ssvid = b.ssvid
+and a.seg_id = b.seg_id
+join all_daily_loitering c
+on a.loitering_end_timestamp=c.loitering_end_timestamp and a.ssvid = c.ssvid
+and a.seg_id = c.seg_id
+)
+--
+--
+--
+
+select * from start_lat_lon
