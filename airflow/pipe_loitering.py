@@ -45,7 +45,7 @@ class PipeLoiteringDagFactory(DagFactory):
                 options=dict(
                     startup_log_file=pp.join(Variable.get('DATAFLOW_WRAPPER_LOG_PATH'),
                                              'pipe_loitering/create-raw-loitering.log'),
-                    command='{docker_run} {docker_image} create_raw_loitering'.format(**config),
+                    command='{docker_run} {docker_image} ./main.py create_raw_loitering'.format(**config),
                     project=config['project_id'],
                     runner='{dataflow_runner}'.format(**config),
                     start_date=start_date,
@@ -70,6 +70,7 @@ class PipeLoiteringDagFactory(DagFactory):
                     'name':'loitering-merge-raw-loitering',
                     'dag':dag,
                     'arguments':[
+                        './main.py',
                         'merge_raw_loitering',
                         '--source', '{project_id}.{pipeline_dataset}.{raw_table}'.format(**config),
                         '--destination', '{project_id}.{pipeline_dataset}.{loitering_table}'.format(**config),
