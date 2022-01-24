@@ -2,7 +2,7 @@ FROM gcr.io/world-fishing-827/github.com/globalfishingwatch/gfw-pipeline:latest-
 
 # Setup local application dependencies
 COPY . ${WORKDIR}
-RUN pip install -r requirements-scheduler.txt
+RUN pip install --use-deprecated=legacy-resolver -r requirements-scheduler.txt
 
 # Setup local module
 RUN pip install -e .

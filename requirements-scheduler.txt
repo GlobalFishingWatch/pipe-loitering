@@ -4,7 +4,7 @@ apache-beam[gcp]==2.35.0
 
 # Other infrastructure we need locally on the local environment
 jinja2
-google-cloud-bigquery
+google-cloud-bigquery==2.32.0
 
 # Testing
-pytest
+pytest==6.2.5
