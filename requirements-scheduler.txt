@@ -1,6 +1,6 @@
 # Apache beam
-apache-beam==2.28.0
-apache-beam[gcp]==2.28.0
+apache-beam==2.35.0
+apache-beam[gcp]==2.35.0
 
 # Other infrastructure we need locally on the local environment
 jinja2
