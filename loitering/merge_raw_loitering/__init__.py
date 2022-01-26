@@ -35,7 +35,6 @@ def run_merge_raw_loitering(argv):
     job = bq_client.query(query, bigquery.QueryJobConfig(
         write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
         destination=options.destination,
-        destination_table_description="Consolidated loitering events",
         clustering_fields=['ssvid'],
         time_partitioning=bigquery.table.TimePartitioning(
             type_=bigquery.table.TimePartitioningType.DAY,
