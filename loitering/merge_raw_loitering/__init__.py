@@ -17,6 +17,15 @@ parser.add_argument('--destination',
                     help='Destination date-partitioned, clustered table to write consolidated loitering events to',
                     required=True)
 
+def set_destination_table_description(destination_table:str, description:str):
+    dest_table_parts = destination_table.split('.')
+    dataset_ref = bigquery.DatasetReference(dest_table_parts[0], dest_table_parts[1])
+    table_ref = dataset_ref.table(dest_table_parts[2])
+    table = bq_client.get_table(table_ref)
+    table.description = description
+    table = bq_client.update_table(table, ["description"])
+
+
 def run_merge_raw_loitering(argv):
     logging.info("Running merge_raw_loitering with args %s", argv)
 
@@ -44,4 +53,7 @@ def run_merge_raw_loitering(argv):
 
     logging.info("Waiting for query job to be done")
     job.result()
+
+    set_destination_table_description(options.destination, "Consolidated loitering events")
+
     logging.info("Done")
