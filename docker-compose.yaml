@@ -3,7 +3,9 @@ services:
   pipeline:
     image: gfw/pipe-loitering
     command: ./main.py
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-scheduler
     volumes:
       - ".:/opt/project"
       - "gcp:/root/.config/"
