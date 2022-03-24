@@ -9,7 +9,14 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 ## [Unreleased]
 
 
-## v1.1.0 - 2021-06-25
+## v1.1.1 - 2022-03-24
+
+### Changed
+
+* [PIPELINE-810](https://globalfishingwatch.atlassian.net/browse/PIPELINE-810):
+  Place images in common location to other pipe steps. Has a custom image for worker.
+
+## v1.1.0 - 2022-02-25
 
 ### Added
 
