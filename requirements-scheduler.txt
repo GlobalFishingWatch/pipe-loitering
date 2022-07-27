@@ -1,4 +1,4 @@
-apache-beam[gcp]==2.35.0
+apache-beam[gcp]==2.40.0
 jinja2==3.0.3
 pytest==6.2.5
 
