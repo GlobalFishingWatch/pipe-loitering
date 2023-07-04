@@ -47,7 +47,7 @@ class LoiteringOptions(PipelineOptions):
             "--source_timestamp_field",
             required=False,
             help="Field used in source to filter records by start and end date.",
-            default="_PARTITIONTIME"
+            default="timestamp"
         )
 
 
