@@ -9,6 +9,13 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 ## [Unreleased]
 
 
+## v1.2.0 - 2023-07-28
+
+### Changed
+
+* [PIPELINE-1319](https://globalfishingwatch.atlassian.net/browse/PIPELINE-1319): Changes
+  version of `Apache Beam` from `2.40.0` to [2.49.0](https://beam.apache.org/blog/beam-2.49.0/).
+
 ## v1.1.2 - 2022-07-21
 
 ### Changed
