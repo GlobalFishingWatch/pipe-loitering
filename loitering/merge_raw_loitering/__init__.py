@@ -86,7 +86,7 @@ TABLE_SCHEMA = {
     ],
 }
 
-SCHEMA_SCHEMAFIELDS = map(lambda x: bigquery.schema.SchemaField(x['name'],x['type'],x['mode'],x['description']), TABLE_SCHEMA['fields'])
+SCHEMA_SCHEMAFIELDS = map(lambda x: bigquery.schema.SchemaField(x['name'],x['type'],x['mode'],description=x['description']), TABLE_SCHEMA['fields'])
 
 bq_client = bigquery.Client()
 
