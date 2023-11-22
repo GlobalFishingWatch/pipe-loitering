@@ -41,12 +41,20 @@ def convert_to_loitering_daily_event(msgs):
         "end_lat": msgs[-1]["lat"],
     }
 
+def has_more_than_one_messages(msgs):
+    return len(msgs) > 1
+
 class CalculateLoiteringStats(beam.PTransform):
     def expand(self, pcoll):
         return (
             pcoll
+            | self.filter_out_only_one_message_segs()
             | self.convert_to_loitering_daily_event()
         )
 
+    def filter_out_only_one_message_segs(self):
+        return beam.Filter(has_more_than_one_messages)
+
     def convert_to_loitering_daily_event(self):
         return beam.Map(convert_to_loitering_daily_event)
+
