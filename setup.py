@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='loitering',
-    version='4.1.1',
+    version='4.1.2',
     packages=find_packages(exclude=['test*.*', 'tests']),
 )
 
