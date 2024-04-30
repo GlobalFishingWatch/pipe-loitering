@@ -24,7 +24,7 @@ class LoiteringPipeline:
 
         (
             self.pipeline
-            | ReadSource(date_range=date_range, source_table=params.source)
+            | ReadSource(date_range=date_range, source_table=params.source, source_timestamp_field=params.source_timestamp_field)
             | CalculateHourlyStats(slow_threshold=params.slow_threshold)
             | SlidingWindowByDay()
             | GroupLoiteringRanges(date_range=date_range)

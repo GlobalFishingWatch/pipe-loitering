@@ -43,4 +43,11 @@ class LoiteringOptions(PipelineOptions):
             help="Wait until the job finishes before returning.",
         )
 
+        required.add_argument(
+            "--source_timestamp_field",
+            required=False,
+            help="Field used in source to filter records by start and end date.",
+            default="_PARTITIONTIME"
+        )
+
 
