@@ -14,14 +14,15 @@ SOURCE_QUERY_TEMPLATE = """
     FROM
       `{source_table}`
     WHERE
-      DATE(_PARTITIONTIME) BETWEEN '{start_date}'
+      DATE({source_timestamp_field}) BETWEEN '{start_date}'
       AND '{end_date}'
 """
 
 class ReadSource(beam.PTransform):
-    def __init__(self, source_table, date_range):
+    def __init__(self, source_table, date_range, source_timestamp_field):
         self.source_table = source_table
         self.start_date, self.end_date = date_range
+        self.source_timestamp_field = source_timestamp_field
 
     def expand(self, pcoll):
         return (
@@ -34,6 +35,7 @@ class ReadSource(beam.PTransform):
             source_table=self.source_table,
             start_date=self.start_date.strftime("%Y-%m-%d"),
             end_date=self.end_date.strftime("%Y-%m-%d"),
+            source_timestamp_field=self.source_timestamp_field,
         )
         return beam.io.ReadFromBigQuery(
             query = query,

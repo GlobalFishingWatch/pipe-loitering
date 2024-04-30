@@ -9,6 +9,13 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 ## [Unreleased]
 
 
+## v1.3.0 - 2024-04-30
+
+### Changed
+
+* [PIPELINE-1871](https://globalfishingwatch.atlassian.net/browse/PIPELINE-1871): Add
+  support for source monthly partitioned table.
+
 ## v1.2.0 - 2023-07-28
 
 ### Changed
