@@ -11,6 +11,7 @@ import apache_beam as beam
 import datetime as dt
 import logging
 from google.cloud import bigquery
+from apache_beam.runners import PipelineState
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ def parse_yyyy_mm_dd_param(value):
 
 list_to_dict = lambda labels: {x.split('=')[0]:x.split('=')[1] for x in labels}
 
-def get_description(opts):
+def get_description(opts, current_date):
     return f"""
 Created by pipe-loitering: {get_pipe_ver()}.
 * Daily static loitering events. This is an intermediate internal table that's
@@ -29,7 +30,7 @@ used to later aggregate into actual loitering events.
 * https://github.com/GlobalFishingWatch/pipe-loitering
 * Source: {opts.source}
 * Threshold speed (knots): {opts.slow_threshold}
-* Date: {opts.start_date}, {opts.end_date}
+* Last date available: {current_date}
 """
 
 
@@ -52,13 +53,6 @@ class LoiteringPipeline:
         date_range = (start_date_with_buffer, end_date)
         labels = list_to_dict(gCloudParams.labels)
 
-        bq = bigquery.Client(project=gCloudParams.project)
-
-        # Ensure we delete any existing rows from the date to be processed.
-        # Needed to maintain consistency if are re-processing dates.
-        logger.info("Deleting existing rows with start_date {}".format(start_date))
-        bq.query(DELETE_QUERY.format(table=params.sink, start_date=start_date))
-
         (
             self.pipeline
             | ReadSource(date_range=date_range, source_table=params.source, labels=labels, source_timestamp_field=params.source_timestamp_field)
@@ -66,8 +60,30 @@ class LoiteringPipeline:
             | SlidingWindowByDay()
             | GroupLoiteringRanges(date_range=date_range)
             | CalculateLoiteringStats()
-            | WriteSink(sink_table=params.sink, description=get_description(params))
+            | WriteSink(sink_table=params.sink)
         )
 
+        self.params = params
+        self.gcloud_params = gCloudParams
+        self.start_date = start_date
+        self.end_date = end_date
+
     def run(self):
-        return self.pipeline.run()
+        bq = bigquery.Client(project=self.gcloud_params.project)
+
+        # Ensure we delete any existing rows from the date to be processed.
+        # Needed to maintain consistency if are re-processing dates.
+        logger.info("Deleting existing rows with start_date {}".format(self.start_date))
+        bq.query(DELETE_QUERY.format(table=self.params.sink, start_date=self.start_date))
+
+        result = self.pipeline.run()
+        result.wait_until_finish()
+
+        if result.state == PipelineState.DONE:
+            logger.info("Updating table description...")
+            table = bq.get_table(self.params.sink)
+            table.description = get_description(self.params, self.start_date)
+            bq.update_table(table, ["description"])
+            logger.info("Ok.")
+
+        return result
