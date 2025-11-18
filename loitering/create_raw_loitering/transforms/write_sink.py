@@ -1,4 +1,8 @@
 import apache_beam as beam
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 TABLE_SCHEMA = {
     "fields": [
@@ -77,6 +81,7 @@ TABLE_SCHEMA = {
     ],
 }
 
+
 class WriteSink(beam.PTransform):
     def __init__(self, sink_table, description: str):
         self.sink_table = sink_table
@@ -89,18 +94,22 @@ class WriteSink(beam.PTransform):
         )
 
     def write_sink(self):
-        def compute_table_for_event(event):
-            table_suffix = event["loitering_end_timestamp"].strftime("%Y%m%d")
-            return "{}{}".format(self.sink_table, table_suffix)
-
         return beam.io.WriteToBigQuery(
-            compute_table_for_event,
+            self.sink_table,
             schema=TABLE_SCHEMA,
             additional_bq_parameters={
                 "destinationTableProperties": {
                     "description": self.description,
-                }
+                },
+                "timePartitioning": {
+                    "type": "MONTH",
+                    "field": "loitering_start_timestamp",
+                    "requirePartitionFilter": False
+                },
+                "clustering": {
+                    "fields": ["loitering_start_timestamp"]
+                },
             },
-            write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
             create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
         )

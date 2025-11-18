@@ -9,6 +9,12 @@ from loitering.create_raw_loitering.transforms.write_sink import WriteSink
 from loitering.utils.ver import get_pipe_ver
 import apache_beam as beam
 import datetime as dt
+import logging
+from google.cloud import bigquery
+
+
+logger = logging.getLogger(__name__)
+
 
 def parse_yyyy_mm_dd_param(value):
     return dt.datetime.strptime(value, "%Y-%m-%d")
@@ -26,6 +32,13 @@ used to later aggregate into actual loitering events.
 * Date: {opts.start_date}, {opts.end_date}
 """
 
+
+DELETE_QUERY = """
+DELETE FROM `{table}`
+WHERE DATE(loitering_start_timestamp) = '{start_date}'
+"""
+
+
 class LoiteringPipeline:
     def __init__(self, options):
         self.pipeline = beam.Pipeline(options=options)
@@ -38,6 +51,13 @@ class LoiteringPipeline:
         start_date_with_buffer = start_date - dt.timedelta(days=1)
         date_range = (start_date_with_buffer, end_date)
         labels = list_to_dict(gCloudParams.labels)
+
+        bq = bigquery.Client(project=gCloudParams.project)
+
+        # Ensure we delete any existing rows from the date to be processed.
+        # Needed to maintain consistency if are re-processing dates.
+        logger.info("Deleting existing rows with start_date {}".format(start_date))
+        bq.query(DELETE_QUERY.format(table=params.sink, start_date=start_date))
 
         (
             self.pipeline

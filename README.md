@@ -24,6 +24,10 @@ You also need to setup your Google Cloud default project to bill for those servi
 docker-compose run pipeline gcloud config set project [YOUR PROJECT]
 ```
 
+### Git Workflow
+
+Please use [GITHUB-FLOW](GITHUB-FLOW.md) as git workflow.
+
 ### Tests
 
 There are [pytest](https://docs.pytest.org/) tests in the `tests` directory, which can be run via `docker-compose run pipeline pytest`.
