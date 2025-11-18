@@ -19,10 +19,11 @@ SOURCE_QUERY_TEMPLATE = """
 """
 
 class ReadSource(beam.PTransform):
-    def __init__(self, source_table, date_range, source_timestamp_field):
+    def __init__(self, source_table, date_range, labels, source_timestamp_field):
         self.source_table = source_table
         self.start_date, self.end_date = date_range
         self.source_timestamp_field = source_timestamp_field
+        self.labels = labels
 
     def expand(self, pcoll):
         return (
@@ -40,4 +41,5 @@ class ReadSource(beam.PTransform):
         return beam.io.ReadFromBigQuery(
             query = query,
             use_standard_sql=True,
+            bigquery_job_labels = self.labels,
         )

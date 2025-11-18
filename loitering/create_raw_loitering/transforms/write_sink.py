@@ -77,15 +77,10 @@ TABLE_SCHEMA = {
     ],
 }
 
-BQ_PARAMS = {
-    "destinationTableProperties": {
-        "description": "Daily static loitering events. This is an intermediate internal table that's used to later aggregate into actual loitering events.",
-    },
-}
-
 class WriteSink(beam.PTransform):
-    def __init__(self, sink_table):
+    def __init__(self, sink_table, description: str):
         self.sink_table = sink_table
+        self.description= description
 
     def expand(self, pcoll):
         return (
@@ -101,7 +96,11 @@ class WriteSink(beam.PTransform):
         return beam.io.WriteToBigQuery(
             compute_table_for_event,
             schema=TABLE_SCHEMA,
-            additional_bq_parameters=BQ_PARAMS,
+            additional_bq_parameters={
+                "destinationTableProperties": {
+                    "description": self.description,
+                }
+            },
             write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
             create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
         )
