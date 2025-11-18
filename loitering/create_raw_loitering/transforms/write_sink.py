@@ -83,9 +83,8 @@ TABLE_SCHEMA = {
 
 
 class WriteSink(beam.PTransform):
-    def __init__(self, sink_table, description: str):
+    def __init__(self, sink_table):
         self.sink_table = sink_table
-        self.description= description
 
     def expand(self, pcoll):
         return (
@@ -98,9 +97,6 @@ class WriteSink(beam.PTransform):
             self.sink_table,
             schema=TABLE_SCHEMA,
             additional_bq_parameters={
-                "destinationTableProperties": {
-                    "description": self.description,
-                },
                 "timePartitioning": {
                     "type": "MONTH",
                     "field": "loitering_start_timestamp",
