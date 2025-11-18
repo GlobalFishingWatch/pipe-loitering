@@ -2,13 +2,14 @@ version: '2'
 services:
   pipeline:
     image: gfw/pipe-loitering
-    command: ./main.py
     build:
       context: .
       dockerfile: Dockerfile-scheduler
     volumes:
       - ".:/opt/project"
       - "gcp:/root/.config/"
+    entrypoint: ["./main.py"]
+
 
 # Use an external named volume so that we can share gcp auth across containers
 # Before first use, this volume must be manually created with

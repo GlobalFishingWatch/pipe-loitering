@@ -1,0 +1,5 @@
+docker-compose run pipeline \
+    merge_raw_loitering \
+    --source world-fishing-827.scratch_tomas_ttl30d.raw_loitering \
+    --destination world-fishing-827.scratch_tomas_ttl30d.loitering \
+    --labels '{"environment": "test"}'
