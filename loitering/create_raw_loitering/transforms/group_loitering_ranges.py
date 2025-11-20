@@ -61,7 +61,7 @@ def calculate_slow_groups(segment, window=beam.DoFn.WindowParam):
 
 class GroupLoiteringRanges(beam.PTransform):
     def __init__(self, date_range):
-        self.buffer_date = date_range[0].date()
+        self.buffer_date = date_range[0]
 
     def expand(self, pcoll):
         return (

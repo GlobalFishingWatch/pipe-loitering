@@ -35,8 +35,9 @@ used to later aggregate into actual loitering events.
 
 
 DELETE_QUERY = """
-DELETE FROM `{table}`
-WHERE DATE(loitering_start_timestamp) = '{start_date}'
+    DELETE FROM `{table}`
+    WHERE DATE({partitioning_field})
+    BETWEEN '{start_date}' AND '{end_date}'
 """
 
 
@@ -47,8 +48,8 @@ class LoiteringPipeline:
         params = options.view_as(LoiteringOptions)
         gCloudParams = options.view_as(GoogleCloudOptions)
 
-        start_date = parse_yyyy_mm_dd_param(params.start_date)
-        end_date = parse_yyyy_mm_dd_param(params.end_date)
+        start_date = parse_yyyy_mm_dd_param(params.start_date).date()
+        end_date = parse_yyyy_mm_dd_param(params.end_date).date()
         start_date_with_buffer = start_date - dt.timedelta(days=1)
         date_range = (start_date_with_buffer, end_date)
         labels = list_to_dict(gCloudParams.labels)
@@ -73,8 +74,16 @@ class LoiteringPipeline:
 
         # Ensure we delete any existing rows from the date to be processed.
         # Needed to maintain consistency if are re-processing dates.
-        logger.info("Deleting existing rows with start_date {}".format(self.start_date))
-        bq.query(DELETE_QUERY.format(table=self.params.sink, start_date=self.start_date))
+        logger.info(
+            "Deleting records in {} from date range [{},{}] (inclusive)"
+            .format(self.params.sink, self.start_date, self.end_date))
+
+        bq.query(DELETE_QUERY.format(
+            table=self.params.sink,
+            partitioning_field="loitering_start_timestamp",
+            start_date=self.start_date,
+            end_date=self.end_date
+        ))
 
         result = self.pipeline.run()
         result.wait_until_finish()
