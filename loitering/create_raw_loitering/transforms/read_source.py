@@ -34,8 +34,8 @@ class ReadSource(beam.PTransform):
     def read_source(self):
         query = SOURCE_QUERY_TEMPLATE.format(
             source_table=self.source_table,
-            start_date=self.start_date.strftime("%Y-%m-%d"),
-            end_date=self.end_date.strftime("%Y-%m-%d"),
+            start_date=self.start_date,
+            end_date=self.end_date,
             source_timestamp_field=self.source_timestamp_field,
         )
         return beam.io.ReadFromBigQuery(
