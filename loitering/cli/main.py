@@ -3,7 +3,7 @@ import sys
 import logging
 
 from loitering.create_raw_loitering import run_create_raw_loitering
-from loitering.merge_raw_loitering  import run_merge_raw_loitering
+from loitering.merge_raw_loitering import run_merge_raw_loitering
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,7 +12,8 @@ SUBCOMMANDS = {
     "merge_raw_loitering": run_merge_raw_loitering,
 }
 
-if __name__ == "__main__":
+
+def main():
     logging.info("Running %s", sys.argv)
 
     if len(sys.argv) < 2:
@@ -23,3 +24,7 @@ if __name__ == "__main__":
     subcommand_args = sys.argv[2:]
 
     SUBCOMMANDS[subcommand](subcommand_args)
+
+
+if __name__ == "__main__":
+    main()
