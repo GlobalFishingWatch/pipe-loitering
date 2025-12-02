@@ -136,18 +136,8 @@ you need to rebuild the docker image (`make docker-build`) in order to use it lo
 
 <div align="justify">
 
-There are two main Git workflows commonly used in software development:
-[Git Flow] and [GitHub Flow].
-We encourage using **GitHub Flow** whenever possible,
-as it is a lightweight workflow that supports rapid iteration,
-continuous delivery, and simpler branching.
-It works especially well for teams that deploy frequently
-and want to keep their main branch always production-ready.
-However,
-if your project involves a long release cycle and a long release process,
-or you need an unstable shared branch like develop for ongoing integration,
-then **Git Flow** may be more appropriate.
-You can read a summary of both workflows in [GITHUB-FLOW.md] and [GIT-FLOW.md].
+In this repository we follow [GitHub Flow].
+You can read a summary in [GIT-FLOW.md].
 
 </div>
 
@@ -156,8 +146,7 @@ You can read a summary of both workflows in [GITHUB-FLOW.md] and [GIT-FLOW.md].
 <div align="justify">
 
 To work on a new feature or fix,
-create a branch from `main` or `develop`,
-depending on the workflow your team follows.
+create a branch from `main`.
 
 Try to follow these guidelines:
 
@@ -187,7 +176,7 @@ Try to follow these guidelines:
 
 [^1]: When performing a rebase, it's acceptable to `push --force` to your own feature branch,
       but **never** on shared branches.
-      Protect `main` and/or `develop` from force pushes via GitHub settings.
+      Protect `main` from force pushes via GitHub settings.
 
 </div>
 
@@ -196,7 +185,7 @@ Try to follow these guidelines:
 <div align="justify">
 
 A Google Cloud build that publishes a Docker image is triggered in the following cases:  
-- When a commit is merged into `main` or `develop`.  
+- When a commit is merged into `main`.  
 - When a new tag is created.
 
 
