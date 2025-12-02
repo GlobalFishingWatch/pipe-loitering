@@ -1,36 +1,30 @@
-# Loitering pipeline
+<h1 align="center" style="border-bottom: none;"> pipe-loitering </h1>
+
+<p align="center">
+  <a href="https://codecov.io/gh/GlobalFishingWatch/pipe-loitering">
+    <img alt="Coverage" src="https://codecov.io/gh/GlobalFishingWatch/pipe-loitering/graph/badge.svg?token=iztfEHreCi">
+  </a>
+  <a>
+    <img alt="Python versions" src="https://img.shields.io/badge/python-3.12%20%7C%20-3.13-blue">
+  </a>
+  <a>
+    <img alt="Apache Beam version" src="https://img.shields.io/badge/ApacheBeam-2.49.0-orange">
+  </a>
+  <a>
+    <img alt="Docker Engine version" src="https://img.shields.io/badge/DockerEngine-v27-yellow">
+  </a>
+  <a>
+    <img alt="Last release" src="https://img.shields.io/github/v/release/GlobalFishingWatch/pipe-loitering">
+  </a>
+</p>
 
 ## Introduction
 
 This repository contains the loitering pipeline, a dataflow pipeline that computes vessel loitering events.
 
-## Development
+## How to Contribute
 
-### Dependencies
-
-You just need [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/) in your machine to run the pipeline. No other dependency is required.
-
-### Setup
-
-The pipeline connects to various services from Google Cloud, so you need to first authenticate with your google cloud account inside the docker images. To do that, you need to run this command and follow the instructions:
-
-```
-docker-compose run pipeline gcloud auth application-default login
-```
-
-You also need to setup your Google Cloud default project to bill for those services via this command:
-
-```
-docker-compose run pipeline gcloud config set project [YOUR PROJECT]
-```
-
-### Git Workflow
-
-Please use [GITHUB-FLOW](GITHUB-FLOW.md) as git workflow.
-
-### Tests
-
-There are [pytest](https://docs.pytest.org/) tests in the `tests` directory, which can be run via `docker-compose run pipeline pytest`.
+Please read the guidelines in [CONTRIBUTING.md].
 
 ## License
 
