@@ -5,7 +5,7 @@
     <img alt="Coverage" src="https://codecov.io/gh/GlobalFishingWatch/pipe-loitering/graph/badge.svg?token=iztfEHreCi">
   </a>
   <a>
-    <img alt="Python versions" src="https://img.shields.io/badge/python-3.8%20%7C%20-3.12-blue">
+    <img alt="Python versions" src="https://img.shields.io/badge/python-3.12%20%7C%20-3.13-blue">
   </a>
   <a>
     <img alt="Apache Beam version" src="https://img.shields.io/badge/ApacheBeam-2.49.0-orange">

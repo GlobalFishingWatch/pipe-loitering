@@ -64,8 +64,8 @@ install-test: upgrade-pip
 	python -m pip install -r requirements-test.txt
 
 .PHONY: install  ## Install the package in editable mode & all dependencies for local development.
-install: upgrade-pip
-	python -m pip install -e .[lint,dev,build,test]
+install: upgrade-pip install-test
+	python -m pip install -e .[lint,dev,build]
 
 .PHONY: test  ## Run all unit tests exporting coverage.xml report.
 test:
