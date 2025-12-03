@@ -5,18 +5,17 @@
     <img alt="Coverage" src="https://codecov.io/gh/GlobalFishingWatch/pipe-loitering/graph/badge.svg?token=iztfEHreCi">
   </a>
   <a>
-    <img alt="Python versions" src="https://img.shields.io/badge/python-3.12%20%7C%20-3.13-blue">
+    <img alt="Python versions" src="https://img.shields.io/badge/python-3.12%20|%203.13-blue">
   </a>
   <a>
-    <img alt="Apache Beam version" src="https://img.shields.io/badge/ApacheBeam-2.49.0-orange">
-  </a>
-  <a>
-    <img alt="Docker Engine version" src="https://img.shields.io/badge/DockerEngine-v27-yellow">
+    <img alt="Apache Beam version" src="https://img.shields.io/badge/ApacheBeam-2.69.0-orange">
   </a>
   <a>
     <img alt="Last release" src="https://img.shields.io/github/v/release/GlobalFishingWatch/pipe-loitering">
   </a>
 </p>
+
+[CONTRIBUTING.md]: CONTRIBUTING.md
 
 ## Introduction
 
