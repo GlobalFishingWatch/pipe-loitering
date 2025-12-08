@@ -22,7 +22,7 @@ def parse_yyyy_mm_dd_param(value):
 
 list_to_dict = lambda labels: {x.split('=')[0]:x.split('=')[1] for x in labels}
 
-def get_description(opts, current_date):
+def get_description(opts):
     return f"""
 Created by pipe-loitering: {get_pipe_ver()}.
 * Daily static loitering events. This is an intermediate internal table that's
@@ -30,7 +30,6 @@ used to later aggregate into actual loitering events.
 * https://github.com/GlobalFishingWatch/pipe-loitering
 * Source: {opts.source}
 * Threshold speed (knots): {opts.slow_threshold}
-* Last date available: {current_date}
 """
 
 
@@ -66,7 +65,7 @@ class LoiteringPipeline:
 
         self.params = params
         self.gcloud_params = gCloudParams
-        self.start_date = start_date
+        self.start_date = start_date_with_buffer
         self.end_date = end_date
 
     def run(self):
@@ -91,7 +90,7 @@ class LoiteringPipeline:
         if result.state == PipelineState.DONE:
             logger.info("Updating table description...")
             table = bq.get_table(self.params.sink)
-            table.description = get_description(self.params, self.start_date)
+            table.description = get_description(self.params)
             bq.update_table(table, ["description"])
             logger.info("Ok.")
 

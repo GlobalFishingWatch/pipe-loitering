@@ -1,4 +1,4 @@
-docker-compose run pipeline \
+pipe-loitering \
     create_raw_loitering \
     --source world-fishing-827.pipe_ais_v3_internal.research_messages \
     --start_date 2018-01-01 \
@@ -6,12 +6,12 @@ docker-compose run pipeline \
     --sink world-fishing-827.scratch_tomas_ttl30d.raw_loitering \
     --project world-fishing-827 \
     --temp_location gs://pipe-temp-us-central-ttl7/dataflow_temp \
-    --job_name tom-test-loitering-raw-partitioned-3 \
+    --job_name tom-test-loitering-fix-bug \
     --max_num_workers 200 \
     --runner dataflow \
     --labels environment=test \
     --setup_file ./setup.py \
-    --requirements_file requirements-worker.txt \
+    --requirements_file requirements.txt \
     --disk_size_gb 100 \
     --region us-central1 \
     --wait_for_job

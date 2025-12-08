@@ -1,4 +1,4 @@
-docker-compose run pipeline \
+pipe-loitering \
     merge_raw_loitering \
     --source world-fishing-827.scratch_tomas_ttl30d.raw_loitering \
     --destination world-fishing-827.scratch_tomas_ttl30d.loitering \

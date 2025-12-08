@@ -19,9 +19,7 @@ anyio==4.12.0
     #   google-genai
     #   httpx
 apache-beam[gcp]==2.69.0
-    # via
-    #   gfw-common
-    #   pipe-loitering (setup.py)
+    # via pipe-loitering (setup.py)
 asn1crypto==1.5.1
     # via scramp
 attrs==25.4.0
@@ -71,12 +69,9 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-gfw-common[beam,bq]==0.2.0
-    # via pipe-loitering (setup.py)
 google-api-core[grpc]==2.28.1
     # via
     #   apache-beam
-    #   google-api-python-client
     #   google-cloud-aiplatform
     #   google-cloud-bigquery
     #   google-cloud-bigquery-storage
@@ -94,8 +89,6 @@ google-api-core[grpc]==2.28.1
     #   google-cloud-storage
     #   google-cloud-videointelligence
     #   google-cloud-vision
-google-api-python-client==2.187.0
-    # via google-cloud-profiler
 google-apitools==0.5.31
     # via apache-beam
 google-auth==2.43.0
@@ -103,7 +96,6 @@ google-auth==2.43.0
     #   apache-beam
     #   cloud-sql-python-connector
     #   google-api-core
-    #   google-api-python-client
     #   google-auth-httplib2
     #   google-cloud-aiplatform
     #   google-cloud-bigquery
@@ -113,7 +105,6 @@ google-auth==2.43.0
     #   google-cloud-datastore
     #   google-cloud-dlp
     #   google-cloud-language
-    #   google-cloud-profiler
     #   google-cloud-pubsub
     #   google-cloud-recommendations-ai
     #   google-cloud-resource-manager
@@ -124,16 +115,12 @@ google-auth==2.43.0
     #   google-genai
     #   keyrings-google-artifactregistry-auth
 google-auth-httplib2==0.2.1
-    # via
-    #   apache-beam
-    #   google-api-python-client
-    #   google-cloud-profiler
+    # via apache-beam
 google-cloud-aiplatform==1.128.0
     # via apache-beam
 google-cloud-bigquery==3.38.0
     # via
     #   apache-beam
-    #   gfw-common
     #   google-cloud-aiplatform
     #   pipe-loitering (setup.py)
 google-cloud-bigquery-storage==2.34.0
@@ -154,8 +141,6 @@ google-cloud-dlp==3.33.0
     # via apache-beam
 google-cloud-language==2.18.0
     # via apache-beam
-google-cloud-profiler==4.1.0
-    # via gfw-common
 google-cloud-pubsub==2.33.0
     # via
     #   apache-beam
@@ -234,7 +219,6 @@ httpcore==1.0.9
 httplib2==0.22.0
     # via
     #   apache-beam
-    #   google-api-python-client
     #   google-apitools
     #   google-auth-httplib2
     #   oauth2client
@@ -261,7 +245,7 @@ jeepney==0.9.0
     #   keyring
     #   secretstorage
 jinja2==3.1.6
-    # via gfw-common
+    # via pipe-loitering (setup.py)
 jsonpickle==3.4.2
     # via apache-beam
 jsonschema==4.25.1
@@ -348,7 +332,6 @@ protobuf==5.29.5
     #   google-cloud-datastore
     #   google-cloud-dlp
     #   google-cloud-language
-    #   google-cloud-profiler
     #   google-cloud-pubsub
     #   google-cloud-recommendations-ai
     #   google-cloud-resource-manager
@@ -408,9 +391,7 @@ python-tds==1.17.1
 pytz==2025.2
     # via apache-beam
 pyyaml==6.0.3
-    # via
-    #   apache-beam
-    #   gfw-common
+    # via apache-beam
 redis==5.3.1
     # via apache-beam
 referencing==0.37.0
@@ -425,15 +406,12 @@ requests==2.32.5
     #   cloud-sql-python-connector
     #   google-api-core
     #   google-cloud-bigquery
-    #   google-cloud-profiler
     #   google-cloud-storage
     #   google-genai
     #   hdfs
     #   keyrings-google-artifactregistry-auth
 rich==14.2.0
-    # via
-    #   gfw-common
-    #   pipe-loitering (setup.py)
+    # via pipe-loitering (setup.py)
 rpds-py==0.30.0
     # via
     #   jsonschema
@@ -458,7 +436,6 @@ sortedcontainers==2.4.0
     # via apache-beam
 sqlparse==0.5.0
     # via
-    #   gfw-common
     #   google-cloud-spanner
     #   pipe-loitering (setup.py)
 tenacity==9.1.2
@@ -479,8 +456,6 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-uritemplate==4.2.0
-    # via google-api-python-client
 urllib3==2.5.0
     # via requests
 websockets==15.0.1
