@@ -17,7 +17,7 @@ namespaces = false
 
 [project]
 name = "pipe-loitering"
-version = "4.2.3"
+version = "4.2.4"
 description = "Computes vessel loitering events."
 readme = "README.md"
 # license = "Apache-2.0"
@@ -33,6 +33,7 @@ dependencies = [
     "apache-beam[gcp]~=2.69",
     "importlib-resources~=6.0",
     "google-cloud-bigquery~=3.0",
+    "jinja2~=3.1",
     "py-cpuinfo~=9.0",
     "pydantic~=2.0",
     "rich~=14.0",
