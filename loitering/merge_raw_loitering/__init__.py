@@ -5,8 +5,12 @@ import argparse
 import logging
 import json
 
+from importlib.resources import files
+
+template_dir = files("loitering").joinpath("merge_raw_loitering")
+
 templates = Environment(
-    loader=FileSystemLoader("loitering/merge_raw_loitering"),
+    loader=FileSystemLoader(str(template_dir)),
 )
 
 TABLE_SCHEMA = {
