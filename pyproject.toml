@@ -12,12 +12,12 @@ where = ["."]
 exclude = ["tests*"]
 namespaces = false
 
-# [tool.setuptools.package-data]  # Uncomment after adding assets.
-# "assets" = ["*"]
+[tool.setuptools.package-data]
+loitering = ["**/*.sql.j2"]
 
 [project]
 name = "pipe-loitering"
-version = "4.2.5"
+version = "4.2.6"
 description = "Computes vessel loitering events."
 readme = "README.md"
 # license = "Apache-2.0"
