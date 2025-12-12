@@ -65,7 +65,7 @@ class LoiteringPipeline:
 
         self.params = params
         self.gcloud_params = gCloudParams
-        self.start_date = start_date_with_buffer
+        self.start_date = start_date
         self.end_date = end_date
 
     def run(self):
@@ -74,12 +74,12 @@ class LoiteringPipeline:
         # Ensure we delete any existing rows from the date to be processed.
         # Needed to maintain consistency if are re-processing dates.
         logger.info(
-            "Deleting records in {} from date range [{},{}] (inclusive)"
+            "Deleting events from {} whose end_date is in the range [{},{}] (inclusive)..."
             .format(self.params.sink, self.start_date, self.end_date))
 
         bq.query(DELETE_QUERY.format(
             table=self.params.sink,
-            partitioning_field="loitering_start_timestamp",
+            partitioning_field="loitering_end_timestamp",
             start_date=self.start_date,
             end_date=self.end_date
         ))
