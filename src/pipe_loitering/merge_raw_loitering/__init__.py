@@ -1,6 +1,6 @@
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
-from loitering.utils.ver import get_pipe_ver
+from pipe_loitering.utils.ver import get_pipe_ver
 import argparse
 import logging
 import json

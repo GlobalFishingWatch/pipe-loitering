@@ -1,4 +1,4 @@
-import loitering.create_raw_loitering.transforms.calculate_loitering_stats as stats
+import pipe_loitering.create_raw_loitering.transforms.calculate_loitering_stats as stats
 import pytest
 import datetime as dt
 
