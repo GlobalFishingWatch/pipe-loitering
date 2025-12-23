@@ -1,27 +1,27 @@
-import sys
 import logging
 from apache_beam.runners import PipelineState
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import StandardOptions
-from loitering.create_raw_loitering.options import LoiteringOptions
-from loitering.create_raw_loitering.pipeline import LoiteringPipeline
+from pipe_loitering.create_raw_loitering.options import LoiteringOptions
+from pipe_loitering.create_raw_loitering.pipeline import LoiteringPipeline
+
 
 def build_pipeline_options_with_defaults(argv):
     return PipelineOptions(
         flags=argv,
     )
 
+
 def is_blocking_run(pipeline_options):
     return (
-        pipeline_options.view_as(LoiteringOptions).wait_for_job or
-        pipeline_options.view_as(StandardOptions).runner == "DirectRunner"
+        pipeline_options.view_as(LoiteringOptions).wait_for_job
+        or pipeline_options.view_as(StandardOptions).runner == "DirectRunner"
     )
+
 
 def success_states(pipeline_options):
     if is_blocking_run(pipeline_options):
-        return {
-            PipelineState.DONE
-        }
+        return {PipelineState.DONE}
     else:
         return {
             PipelineState.DONE,
@@ -29,6 +29,7 @@ def success_states(pipeline_options):
             PipelineState.UNKNOWN,
             PipelineState.PENDING,
         }
+
 
 def run_create_raw_loitering(argv):
     logging.info("Running create_raw_loitering dataflow pipeline with args %s", argv)

@@ -1,12 +1,18 @@
 from apache_beam.options.pipeline_options import GoogleCloudOptions
-from loitering.create_raw_loitering.options import LoiteringOptions
-from loitering.create_raw_loitering.transforms.calculate_hourly_stats import CalculateHourlyStats
-from loitering.create_raw_loitering.transforms.calculate_loitering_stats import CalculateLoiteringStats
-from loitering.create_raw_loitering.transforms.group_loitering_ranges import GroupLoiteringRanges
-from loitering.create_raw_loitering.transforms.read_source import ReadSource
-from loitering.create_raw_loitering.transforms.window_by_day import SlidingWindowByDay
-from loitering.create_raw_loitering.transforms.write_sink import WriteSink
-from loitering.utils.ver import get_pipe_ver
+from pipe_loitering.create_raw_loitering.options import LoiteringOptions
+from pipe_loitering.create_raw_loitering.transforms.calculate_hourly_stats import (
+    CalculateHourlyStats,
+)
+from pipe_loitering.create_raw_loitering.transforms.calculate_loitering_stats import (
+    CalculateLoiteringStats,
+)
+from pipe_loitering.create_raw_loitering.transforms.group_loitering_ranges import (
+    GroupLoiteringRanges,
+)
+from pipe_loitering.create_raw_loitering.transforms.read_source import ReadSource
+from pipe_loitering.create_raw_loitering.transforms.window_by_day import SlidingWindowByDay
+from pipe_loitering.create_raw_loitering.transforms.write_sink import WriteSink
+from pipe_loitering.utils.ver import get_pipe_ver
 import apache_beam as beam
 import datetime as dt
 import logging
@@ -20,7 +26,9 @@ logger = logging.getLogger(__name__)
 def parse_yyyy_mm_dd_param(value):
     return dt.datetime.strptime(value, "%Y-%m-%d")
 
-list_to_dict = lambda labels: {x.split('=')[0]:x.split('=')[1] for x in labels}
+
+list_to_dict = lambda labels: {x.split("=")[0]: x.split("=")[1] for x in labels}  # noqa
+
 
 def get_description(opts):
     return f"""
@@ -55,7 +63,12 @@ class LoiteringPipeline:
 
         (
             self.pipeline
-            | ReadSource(date_range=date_range, source_table=params.source, labels=labels, source_timestamp_field=params.source_timestamp_field)
+            | ReadSource(
+                date_range=date_range,
+                source_table=params.source,
+                labels=labels,
+                source_timestamp_field=params.source_timestamp_field,
+            )
             | CalculateHourlyStats(slow_threshold=params.slow_threshold)
             | SlidingWindowByDay()
             | GroupLoiteringRanges(date_range=date_range)
@@ -74,15 +87,19 @@ class LoiteringPipeline:
         # Ensure we delete any existing rows from the date to be processed.
         # Needed to maintain consistency if are re-processing dates.
         logger.info(
-            "Deleting events from {} whose end_date is in the range [{},{}] (inclusive)..."
-            .format(self.params.sink, self.start_date, self.end_date))
+            "Deleting events from {} whose end_date is in the range [{},{}] (inclusive)...".format(
+                self.params.sink, self.start_date, self.end_date
+            )
+        )
 
-        bq.query(DELETE_QUERY.format(
-            table=self.params.sink,
-            partitioning_field="loitering_end_timestamp",
-            start_date=self.start_date,
-            end_date=self.end_date
-        ))
+        bq.query(
+            DELETE_QUERY.format(
+                table=self.params.sink,
+                partitioning_field="loitering_end_timestamp",
+                start_date=self.start_date,
+                end_date=self.end_date,
+            )
+        )
 
         result = self.pipeline.run()
         result.wait_until_finish()

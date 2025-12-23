@@ -1,5 +1,4 @@
 import apache_beam as beam
-import datetime as dt
 
 SOURCE_QUERY_TEMPLATE = """
     SELECT
@@ -18,6 +17,7 @@ SOURCE_QUERY_TEMPLATE = """
       AND '{end_date}'
 """
 
+
 class ReadSource(beam.PTransform):
     def __init__(self, source_table, date_range, labels, source_timestamp_field):
         self.source_table = source_table
@@ -26,10 +26,7 @@ class ReadSource(beam.PTransform):
         self.labels = labels
 
     def expand(self, pcoll):
-        return (
-            pcoll
-            | self.read_source()
-        )
+        return pcoll | self.read_source()
 
     def read_source(self):
         query = SOURCE_QUERY_TEMPLATE.format(
@@ -39,7 +36,7 @@ class ReadSource(beam.PTransform):
             source_timestamp_field=self.source_timestamp_field,
         )
         return beam.io.ReadFromBigQuery(
-            query = query,
+            query=query,
             use_standard_sql=True,
-            bigquery_job_labels = self.labels,
+            bigquery_job_labels=self.labels,
         )

@@ -2,8 +2,8 @@
 import sys
 import logging
 
-from loitering.create_raw_loitering import run_create_raw_loitering
-from loitering.merge_raw_loitering import run_merge_raw_loitering
+from pipe_loitering.create_raw_loitering import run_create_raw_loitering
+from pipe_loitering.merge_raw_loitering import run_merge_raw_loitering
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,7 +17,10 @@ def main():
     logging.info("Running %s", sys.argv)
 
     if len(sys.argv) < 2:
-        logging.info("No subcommand specified. Run pipeline [SUBCOMMAND], where subcommand is one of %s", SUBCOMMANDS.keys())
+        logging.info(
+            "No subcommand specified. Run pipeline [SUBCOMMAND], where subcommand is one of %s",
+            SUBCOMMANDS.keys(),
+        )
         exit(1)
 
     subcommand = sys.argv[1]

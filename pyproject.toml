@@ -3,12 +3,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-# package-dir = {"" = "src"}
-package-dir = {"" = "."}          # Replace after changing to src layout.
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-# where = ["src"]
-where = ["."]
+where = ["src"]
 exclude = ["tests*"]
 namespaces = false
 
@@ -48,7 +46,7 @@ Repository = "https://github.com/GlobalFishingWatch/pipe-loitering"
 Issues = "https://github.com/GlobalFishingWatch/pipe-loitering/issues"
 
 [project.scripts]
-pipe-loitering = "loitering.cli.main:main"
+pipe-loitering = "pipe_loitering.cli.main:main"
 
 [project.optional-dependencies]
 

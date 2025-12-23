@@ -1,13 +1,13 @@
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
-from loitering.utils.ver import get_pipe_ver
+from pipe_loitering.utils.ver import get_pipe_ver
 import argparse
 import logging
 import json
 
 from importlib.resources import files
 
-template_dir = files("loitering").joinpath("merge_raw_loitering")
+template_dir = files("pipe_loitering").joinpath("merge_raw_loitering")
 
 templates = Environment(
     loader=FileSystemLoader(str(template_dir)),
@@ -49,19 +49,25 @@ TABLE_SCHEMA = {
             "name": "tot_distance_nm",
             "type": "FLOAT",
             "mode": "NULLABLE",
-            "description": "Total distance in nautical miles the vessel moved during the loitering event",
+            "description": (
+                "Total distance in nautical miles the vessel moved during the loitering event"
+            )
         },
         {
             "name": "avg_speed_knots",
             "type": "FLOAT",
             "mode": "NULLABLE",
-            "description": "Average speed, in knots for all the hourly buckets contained in the loitering event",
+            "description": (
+                "Average speed (knots) for all the hourly buckets contained in the loitering event"
+            )
         },
         {
             "name": "avg_distance_from_shore_nm",
             "type": "FLOAT",
             "mode": "NULLABLE",
-            "description": "Weighted average distance from shore in nautical miles during the loitering event",
+            "description": (
+                "Weighted average distance from shore in nautical miles during the loitering event"
+            )
         },
         {
             "name": "start_lon",
@@ -90,26 +96,31 @@ TABLE_SCHEMA = {
     ],
 }
 
-SCHEMA_SCHEMAFIELDS = map(lambda x: bigquery.schema.SchemaField(x['name'],x['type'],x['mode'],description=x['description']), TABLE_SCHEMA['fields'])
+SCHEMA_SCHEMAFIELDS = map(
+    lambda x: bigquery.schema.SchemaField(
+        x["name"], x["type"], x["mode"], description=x["description"]
+    ),
+    TABLE_SCHEMA["fields"],
+)
 
 bq_client = bigquery.Client()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--source',
-                    help='Source date-sharded table to read daily loitering events from',
-                    required=True)
-parser.add_argument('--destination',
-                    help='Destination date-partitioned, clustered table to write consolidated loitering events to',
-                    required=True)
-parser.add_argument('--labels',
-                    help='Labels to audit costs. Dict',
-                    type=json.loads,
-                    required=True)
+parser.add_argument(
+    "--source", help="Source date-sharded table to read daily loitering events from", required=True
+)
+parser.add_argument(
+    "--destination",
+    help="Destination date-partitioned, clustered table to write consolidated loitering events to",
+    required=True,
+)
+parser.add_argument("--labels", help="Labels to audit costs. Dict", type=json.loads, required=True)
+
 
 def get_table(destination_table: str) -> bigquery.table.Table:
-    dest_table_parts = destination_table.split('.')
+    dest_table_parts = destination_table.split(".")
     dataset_ref = bigquery.DatasetReference(dest_table_parts[0], dest_table_parts[1])
-    return bq_client.get_table(dataset_ref.table(dest_table_parts[2])) # API request
+    return bq_client.get_table(dataset_ref.table(dest_table_parts[2]))  # API request
 
 
 def run_merge_raw_loitering(argv):
@@ -119,7 +130,7 @@ def run_merge_raw_loitering(argv):
 
     logging.info("Parsed options is %s", options)
 
-    query_template = templates.get_template('aggregate.sql.j2')
+    query_template = templates.get_template("aggregate.sql.j2")
     query = query_template.render(
         source_daily_partitioned_table=options.source,
     )
@@ -127,16 +138,19 @@ def run_merge_raw_loitering(argv):
     logging.info("Running the following query to push data to %s", options.destination)
     logging.info(query)
 
-    job = bq_client.query(query, bigquery.QueryJobConfig(
-        write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
-        destination=options.destination,
-        clustering_fields=['loitering_start_timestamp', 'ssvid'],
-        time_partitioning=bigquery.table.TimePartitioning(
-            type_=bigquery.table.TimePartitioningType.MONTH,
-            field='loitering_start_timestamp',
+    job = bq_client.query(
+        query,
+        bigquery.QueryJobConfig(
+            write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
+            destination=options.destination,
+            clustering_fields=["loitering_start_timestamp", "ssvid"],
+            time_partitioning=bigquery.table.TimePartitioning(
+                type_=bigquery.table.TimePartitioningType.MONTH,
+                field="loitering_start_timestamp",
+            ),
+            labels=options.labels,
         ),
-        labels=options.labels,
-    ))
+    )
 
     logging.info("Waiting for query job to be done")
     job.result()
@@ -149,9 +163,10 @@ Created by pipe-loitering: {get_pipe_ver()}.
 * https://github.com/GlobalFishingWatch/pipe-loitering
 * Source: {options.source}
 """
-    table.require_partition_filter=True
+    table.require_partition_filter = True
     table.labels = options.labels
-    bq_client.update_table(table, ["schema", "description", "require_partition_filter", "labels"]) # API request
-
+    bq_client.update_table(
+        table, ["schema", "description", "require_partition_filter", "labels"]
+    )  # API request
 
     logging.info("Done")

@@ -34,7 +34,10 @@ TABLE_SCHEMA = {
             "name": "avg_speed_knots",
             "type": "FLOAT",
             "mode": "NULLABLE",
-            "description": "Average speed, in knots for all the hourly buckets contained in the loitering event",
+            "description": (
+                "Average speed, in knots for all the hourly buckets contained "
+                "in the loitering event"
+            )
         },
         {
             "name": "loitering_hours",
@@ -46,13 +49,17 @@ TABLE_SCHEMA = {
             "name": "tot_distance_nm",
             "type": "FLOAT",
             "mode": "NULLABLE",
-            "description": "Total distance in nautical miles the vessel moved during the loitering event",
+            "description": (
+                "Total distance in nautical miles the vessel moved during the loitering event"
+            ),
         },
         {
             "name": "avg_distance_from_shore_nm",
             "type": "FLOAT",
             "mode": "NULLABLE",
-            "description": "Weighted average distance from shore in nautical miles during the loitering event",
+            "description": (
+                "Weighted average distance from shore in nautical miles during the loitering event"
+            )
         },
         {
             "name": "start_lon",
@@ -87,10 +94,7 @@ class WriteSink(beam.PTransform):
         self.sink_table = sink_table
 
     def expand(self, pcoll):
-        return (
-            pcoll
-            | self.write_sink()
-        )
+        return pcoll | self.write_sink()
 
     def write_sink(self):
         return beam.io.WriteToBigQuery(
@@ -100,11 +104,9 @@ class WriteSink(beam.PTransform):
                 "timePartitioning": {
                     "type": "MONTH",
                     "field": "loitering_start_timestamp",
-                    "requirePartitionFilter": False
+                    "requirePartitionFilter": False,
                 },
-                "clustering": {
-                    "fields": ["loitering_start_timestamp"]
-                },
+                "clustering": {"fields": ["loitering_start_timestamp"]},
             },
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
             create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,

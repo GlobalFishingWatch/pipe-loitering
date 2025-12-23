@@ -1,14 +1,18 @@
-import loitering.create_raw_loitering.transforms.calculate_hourly_stats as stats
+import pipe_loitering.create_raw_loitering.transforms.calculate_hourly_stats as stats
 import datetime as dt
 import pytest
 
+
 class TestConvertGroupToHourlyBucket:
     def test_sorts_mesasges(self):
-        group = (("SEG", "HOUR"), [
-            {"ssvid": "1", "timestamp": dt.datetime(2020, 2, 1)},
-            {"ssvid": "1", "timestamp": dt.datetime(2020, 1, 1)},
-            {"ssvid": "1", "timestamp": dt.datetime(2020, 1, 17)},
-        ])
+        group = (
+            ("SEG", "HOUR"),
+            [
+                {"ssvid": "1", "timestamp": dt.datetime(2020, 2, 1)},
+                {"ssvid": "1", "timestamp": dt.datetime(2020, 1, 1)},
+                {"ssvid": "1", "timestamp": dt.datetime(2020, 1, 17)},
+            ],
+        )
 
         result = stats.convert_group_to_hourly_bucket(group)
 
@@ -21,8 +25,9 @@ class TestConvertGroupToHourlyBucket:
                 {"ssvid": "1", "timestamp": dt.datetime(2020, 1, 1)},
                 {"ssvid": "1", "timestamp": dt.datetime(2020, 1, 17)},
                 {"ssvid": "1", "timestamp": dt.datetime(2020, 2, 1)},
-            ]
+            ],
         }
+
 
 class TestCalculateTotalHours:
     def test_calculate_total_hours(self):
@@ -46,6 +51,7 @@ class TestCalculateTotalHours:
         result = stats.calculate_total_hours(msgs)
 
         assert result is None
+
 
 class TestCalculateTotalDistance:
     def test_calculate_total_distance(self):
@@ -80,51 +86,43 @@ class TestCalculateTotalDistance:
 
         assert result is None
 
+
 class TestCalculateAvgSpeedInKnots:
     def test_calculate_avg_speed_in_knots(self):
-        bucket = {
-            "hours": 5, "meters_to_prev": 1852
-        }
+        bucket = {"hours": 5, "meters_to_prev": 1852}
 
         result = stats.calculate_avg_speed_in_knots(bucket)
 
         assert result == pytest.approx(0.2)
 
     def test_calculate_avg_speed_in_knots_zero_hours(self):
-        bucket = {
-            "hours": 0, "meters_to_prev": 1852
-        }
+        bucket = {"hours": 0, "meters_to_prev": 1852}
 
         result = stats.calculate_avg_speed_in_knots(bucket)
 
         assert result is None
 
     def test_calculate_avg_speed_in_knots_none_hours(self):
-        bucket = {
-            "hours": None, "meters_to_prev": 1852
-        }
+        bucket = {"hours": None, "meters_to_prev": 1852}
 
         result = stats.calculate_avg_speed_in_knots(bucket)
 
         assert result is None
 
     def test_calculate_avg_speed_in_knots_zero_distance(self):
-        bucket = {
-            "hours": 5, "meters_to_prev": 0
-        }
+        bucket = {"hours": 5, "meters_to_prev": 0}
 
         result = stats.calculate_avg_speed_in_knots(bucket)
 
         assert result == pytest.approx(0)
 
     def test_calculate_avg_speed_in_knots_none_distance(self):
-        bucket = {
-            "hours": 5, "meters_to_prev": None
-        }
+        bucket = {"hours": 5, "meters_to_prev": None}
 
         result = stats.calculate_avg_speed_in_knots(bucket)
 
         assert result is None
+
 
 class TestCalculateIsSlow:
     def test_calculate_is_slow_when_it_is(self):

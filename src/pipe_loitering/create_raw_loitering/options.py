@@ -1,5 +1,6 @@
 from apache_beam.options.pipeline_options import PipelineOptions
 
+
 class LoiteringOptions(PipelineOptions):
     @classmethod
     def _add_argparse_args(cls, parser):
@@ -7,25 +8,29 @@ class LoiteringOptions(PipelineOptions):
         required.add_argument(
             "--source",
             required=True,
-            help="Source table to read messages from, in the standard sql format PROJECT.DATASET.TABLE. Usually, this is the pre-thinned and filtered gfw_research.pipe_vXYZ table, such as gfw_research.pipe_v20201001.",
+            help=(
+                "Source table to read messages from, in the format 'PROJECT.DATASET.TABLE'. "
+                "Usually, this is the pre-thinned and filtered gfw_research.pipe_vXYZ table, "
+                "such as gfw_research.pipe_v20201001.",
+            )
         )
 
         required.add_argument(
             "--sink",
             required=True,
-            help="Date-sharded table prefix to write messages to, in the legacy sql format PROJECT:DATASET.TABLE.",
+            help="Destination table to write messages to, in the format 'PROJECT.DATASET.TABLE'.",
         )
 
         required.add_argument(
             "--start_date",
             required=True,
-            help="Read the source table for messages after start date in format YYYY-MM-DD"
+            help="Read the source table for messages after start date in format YYYY-MM-DD",
         )
 
         required.add_argument(
             "--end_date",
             required=True,
-            help="Read the source table for messages before end date in format YYYY-MM-DD"
+            help="Read the source table for messages before end date in format YYYY-MM-DD",
         )
 
         optional = parser.add_argument_group("Optional")
@@ -47,7 +52,5 @@ class LoiteringOptions(PipelineOptions):
             "--source_timestamp_field",
             required=False,
             help="Field used in source to filter records by start and end date.",
-            default="timestamp"
+            default="timestamp",
         )
-
-

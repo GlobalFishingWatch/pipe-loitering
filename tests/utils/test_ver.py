@@ -1,4 +1,4 @@
-from loitering.utils.ver import get_pipe_ver
+from pipe_loitering.utils.ver import get_pipe_ver
 
 
 def test_get_pipe_ver():

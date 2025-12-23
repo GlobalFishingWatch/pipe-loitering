@@ -10,6 +10,8 @@ services:
     build:
       context: .
       target: dev
+    environment:
+      GOOGLE_CLOUD_PROJECT: world-fishing-827
     volumes:
       - ".:/opt/project"
       - "gcp:/root/.config/"
