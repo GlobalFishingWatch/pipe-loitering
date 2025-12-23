@@ -1,9 +1,10 @@
 import apache_beam as beam
-import itertools as it
 import datetime as dt
+
 
 def window_current_day(window):
     return window.end.to_utc_datetime().date() - dt.timedelta(days=1)
+
 
 def partition_buckets_into_days(buckets, split_date):
     yesterday_buckets = []
@@ -17,9 +18,11 @@ def partition_buckets_into_days(buckets, split_date):
 
     return (yesterday_buckets, today_buckets)
 
+
 def is_not_buffer_window(buffer_date, window):
     current_day = window_current_day(window)
     return buffer_date != current_day
+
 
 def calculate_slow_groups(segment, window=beam.DoFn.WindowParam):
     current_day = window_current_day(window)
@@ -72,11 +75,12 @@ class GroupLoiteringRanges(beam.PTransform):
         )
 
     def group_by_seg_id(self):
-        return beam.GroupBy(seg_id=lambda bucket: bucket['seg_id'])
+        return beam.GroupBy(seg_id=lambda bucket: bucket["seg_id"])
 
     def filter_buffer_window(self):
-        return beam.Filter(lambda _, window=beam.DoFn.WindowParam: is_not_buffer_window(self.buffer_date, window))
+        return beam.Filter(
+            lambda _, window=beam.DoFn.WindowParam: is_not_buffer_window(self.buffer_date, window)
+        )
 
     def calculate_slow_groups(self):
         return beam.FlatMap(calculate_slow_groups)
-

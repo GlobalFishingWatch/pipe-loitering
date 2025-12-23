@@ -1,13 +1,18 @@
 import apache_beam as beam
-from pipe_loitering.create_raw_loitering.transforms.calculate_hourly_stats import calculate_total_hours, calculate_total_distance
+from pipe_loitering.create_raw_loitering.transforms.calculate_hourly_stats import (
+    calculate_total_hours,
+    calculate_total_distance,
+)
+
 
 def calculate_avg_speed_in_knots(msgs):
     hours = calculate_total_hours(msgs)
     distance_m = calculate_total_distance(msgs)
     if hours and distance_m is not None:
-        return  distance_m / hours / 1852
+        return distance_m / hours / 1852
     else:
         return None
+
 
 def calculate_avg_distance_from_shore_nm(msgs):
     msgs_with_distance = [msg for msg in msgs if msg["distance_from_shore_m"] is not None]
@@ -18,7 +23,13 @@ def calculate_avg_distance_from_shore_nm(msgs):
     hours = calculate_total_hours(msgs_with_distance)
 
     if hours:
-        weighted_sum = sum([msg["distance_from_shore_m"] * msg["hours"] for msg in msgs_with_distance if msg["hours"]])
+        weighted_sum = sum(
+            [
+                msg["distance_from_shore_m"] * msg["hours"]
+                for msg in msgs_with_distance
+                if msg["hours"]
+            ]
+        )
         return weighted_sum / hours / 1852
     else:
         total_sum = sum([msg["distance_from_shore_m"] for msg in msgs_with_distance])
@@ -41,8 +52,10 @@ def convert_to_loitering_daily_event(msgs):
         "end_lat": msgs[-1]["lat"],
     }
 
+
 def has_more_than_one_messages(msgs):
     return len(msgs) > 1
+
 
 class CalculateLoiteringStats(beam.PTransform):
     def expand(self, pcoll):
@@ -57,4 +70,3 @@ class CalculateLoiteringStats(beam.PTransform):
 
     def convert_to_loitering_daily_event(self):
         return beam.Map(convert_to_loitering_daily_event)
-

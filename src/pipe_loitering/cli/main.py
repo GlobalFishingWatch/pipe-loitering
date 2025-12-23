@@ -17,7 +17,10 @@ def main():
     logging.info("Running %s", sys.argv)
 
     if len(sys.argv) < 2:
-        logging.info("No subcommand specified. Run pipeline [SUBCOMMAND], where subcommand is one of %s", SUBCOMMANDS.keys())
+        logging.info(
+            "No subcommand specified. Run pipeline [SUBCOMMAND], where subcommand is one of %s",
+            SUBCOMMANDS.keys(),
+        )
         exit(1)
 
     subcommand = sys.argv[1]

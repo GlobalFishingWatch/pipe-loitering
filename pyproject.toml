@@ -46,7 +46,7 @@ Repository = "https://github.com/GlobalFishingWatch/pipe-loitering"
 Issues = "https://github.com/GlobalFishingWatch/pipe-loitering/issues"
 
 [project.scripts]
-pipe-loitering = "loitering.cli.main:main"
+pipe-loitering = "pipe_loitering.cli.main:main"
 
 [project.optional-dependencies]
 
