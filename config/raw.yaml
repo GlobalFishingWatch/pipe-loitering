@@ -1,0 +1,17 @@
+bq_input: world-fishing-827.pipe_ais_v3_internal.research_messages
+bq_output: world-fishing-827.scratch_tomas_ttl30d.raw_loitering_cli
+date_range: ["2018-01-01", "2018-01-01"]
+
+project: world-fishing-827
+runner: dataflow
+region: us-central1
+job_name: tom-test-loitering-standard-cli
+temp_location: gs://pipe-temp-us-central-ttl7/dataflow_temp
+staging_location: gs://pipe-temp-us-central-ttl7/dataflow_staging
+subnetwork: regions/us-central1/subnetworks/gfw-internal-us-central1
+
+max_num_workers: 200
+disk_size_gb: 100
+
+labels:
+  environment: test
