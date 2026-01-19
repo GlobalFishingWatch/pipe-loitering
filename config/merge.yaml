@@ -1,0 +1,5 @@
+bq_input: world-fishing-827.scratch_tomas_ttl30d.raw_loitering_cli
+bq_output: world-fishing-827.scratch_tomas_ttl30d.loitering
+
+labels:
+  environment: test
