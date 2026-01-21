@@ -1,9 +1,7 @@
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 from pipe_loitering.utils.ver import get_pipe_ver
-import argparse
 import logging
-import json
 
 from importlib.resources import files
 
@@ -105,17 +103,6 @@ SCHEMA_SCHEMAFIELDS = map(
 
 bq_client = bigquery.Client()
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--source", help="Source date-sharded table to read daily loitering events from", required=True
-)
-parser.add_argument(
-    "--destination",
-    help="Destination date-partitioned, clustered table to write consolidated loitering events to",
-    required=True,
-)
-parser.add_argument("--labels", help="Labels to audit costs. Dict", type=json.loads, required=True)
-
 
 def get_table(destination_table: str) -> bigquery.table.Table:
     dest_table_parts = destination_table.split(".")
@@ -123,26 +110,20 @@ def get_table(destination_table: str) -> bigquery.table.Table:
     return bq_client.get_table(dataset_ref.table(dest_table_parts[2]))  # API request
 
 
-def run_merge_raw_loitering(argv):
-    logging.info("Running merge_raw_loitering with args %s", argv)
-
-    options = parser.parse_args(argv)
-
-    logging.info("Parsed options is %s", options)
-
+def run(options):
     query_template = templates.get_template("aggregate.sql.j2")
     query = query_template.render(
-        source_daily_partitioned_table=options.source,
+        source_daily_partitioned_table=options.bq_input,
     )
 
-    logging.info("Running the following query to push data to %s", options.destination)
+    logging.info("Running the following query to push data to %s", options.bq_output)
     logging.info(query)
 
     job = bq_client.query(
         query,
         bigquery.QueryJobConfig(
             write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
-            destination=options.destination,
+            destination=options.bq_output,
             clustering_fields=["loitering_start_timestamp", "ssvid"],
             time_partitioning=bigquery.table.TimePartitioning(
                 type_=bigquery.table.TimePartitioningType.MONTH,
@@ -155,13 +136,13 @@ def run_merge_raw_loitering(argv):
     logging.info("Waiting for query job to be done")
     job.result()
 
-    table = get_table(options.destination)
+    table = get_table(options.bq_output)
     table.schema = list(SCHEMA_SCHEMAFIELDS)
     table.description = f"""
 Created by pipe-loitering: {get_pipe_ver()}.
 * Consolidated loitering events
 * https://github.com/GlobalFishingWatch/pipe-loitering
-* Source: {options.source}
+* Source: {options.bq_input}
 """
     table.require_partition_filter = True
     table.labels = options.labels
