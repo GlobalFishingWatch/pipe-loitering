@@ -1,5 +1,11 @@
-from apache_beam.options.pipeline_options import GoogleCloudOptions
-from pipe_loitering.create_raw_loitering.options import LoiteringOptions
+import logging
+import datetime as dt
+from types import SimpleNamespace
+
+from google.cloud import bigquery
+from apache_beam.runners import PipelineState
+from gfw.common.beam.pipeline import Pipeline
+
 from pipe_loitering.create_raw_loitering.transforms.calculate_hourly_stats import (
     CalculateHourlyStats,
 )
@@ -9,15 +15,11 @@ from pipe_loitering.create_raw_loitering.transforms.calculate_loitering_stats im
 from pipe_loitering.create_raw_loitering.transforms.group_loitering_ranges import (
     GroupLoiteringRanges,
 )
+
 from pipe_loitering.create_raw_loitering.transforms.read_source import ReadSource
 from pipe_loitering.create_raw_loitering.transforms.window_by_day import SlidingWindowByDay
 from pipe_loitering.create_raw_loitering.transforms.write_sink import WriteSink
 from pipe_loitering.utils.ver import get_pipe_ver
-import apache_beam as beam
-import datetime as dt
-import logging
-from google.cloud import bigquery
-from apache_beam.runners import PipelineState
 
 
 logger = logging.getLogger(__name__)
@@ -25,9 +27,6 @@ logger = logging.getLogger(__name__)
 
 def parse_yyyy_mm_dd_param(value):
     return dt.datetime.strptime(value, "%Y-%m-%d")
-
-
-list_to_dict = lambda labels: {x.split("=")[0]: x.split("=")[1] for x in labels}  # noqa
 
 
 def get_description(opts):
@@ -48,36 +47,47 @@ DELETE_QUERY = """
 """
 
 
+# TODO: refactor to use gfw.common.beam.pipeline package.
+def run(args: SimpleNamespace):
+    pipeline = LoiteringPipeline(args)
+    result = pipeline.run()
+    result.wait_until_finish()
+
+
 class LoiteringPipeline:
     def __init__(self, options):
-        self.pipeline = beam.Pipeline(options=options)
+        pipeline = Pipeline(
+            unparsed_args=options.unknown_unparsed_args,
+            **options.unknown_parsed_args
+        )
 
-        params = options.view_as(LoiteringOptions)
-        gCloudParams = options.view_as(GoogleCloudOptions)
+        self.pipeline = pipeline.pipeline
 
-        start_date = parse_yyyy_mm_dd_param(params.start_date).date()
-        end_date = parse_yyyy_mm_dd_param(params.end_date).date()
+        start_date_str, end_date_str = options.date_range
+
+        start_date = parse_yyyy_mm_dd_param(start_date_str).date()
+        end_date = parse_yyyy_mm_dd_param(end_date_str).date()
+
         start_date_with_buffer = start_date - dt.timedelta(days=1)
         date_range = (start_date_with_buffer, end_date)
-        labels = list_to_dict(gCloudParams.labels)
 
         (
             self.pipeline
             | ReadSource(
                 date_range=date_range,
-                source_table=params.source,
-                labels=labels,
-                source_timestamp_field=params.source_timestamp_field,
+                source_table=options.bq_input,
+                labels=options.labels,
+                source_timestamp_field=options.source_timestamp_field,
             )
-            | CalculateHourlyStats(slow_threshold=params.slow_threshold)
+            | CalculateHourlyStats(slow_threshold=options.slow_threshold)
             | SlidingWindowByDay()
             | GroupLoiteringRanges(date_range=date_range)
             | CalculateLoiteringStats()
-            | WriteSink(sink_table=params.sink)
+            | WriteSink(sink_table=options.bq_output)
         )
 
-        self.params = params
-        self.gcloud_params = gCloudParams
+        self.options = options
+        self.gcloud_params = pipeline.cloud_options
         self.start_date = start_date
         self.end_date = end_date
 
@@ -88,13 +98,13 @@ class LoiteringPipeline:
         # Needed to maintain consistency if are re-processing dates.
         logger.info(
             "Deleting events from {} whose end_date is in the range [{},{}] (inclusive)...".format(
-                self.params.sink, self.start_date, self.end_date
+                self.options.bq_output, self.start_date, self.end_date
             )
         )
 
         bq.query(
             DELETE_QUERY.format(
-                table=self.params.sink,
+                table=self.options.bq_output,
                 partitioning_field="loitering_end_timestamp",
                 start_date=self.start_date,
                 end_date=self.end_date,
