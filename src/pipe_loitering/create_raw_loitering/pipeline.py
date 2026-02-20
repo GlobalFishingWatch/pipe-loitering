@@ -35,7 +35,7 @@ Created by pipe-loitering: {get_pipe_ver()}.
 * Daily static loitering events. This is an intermediate internal table that's
 used to later aggregate into actual loitering events.
 * https://github.com/GlobalFishingWatch/pipe-loitering
-* Source: {opts.source}
+* Source: {opts.bq_input}
 * Threshold speed (knots): {opts.slow_threshold}
 """
 
@@ -116,8 +116,8 @@ class LoiteringPipeline:
 
         if result.state == PipelineState.DONE:
             logger.info("Updating table description...")
-            table = bq.get_table(self.params.sink)
-            table.description = get_description(self.params)
+            table = bq.get_table(self.options.bq_output)
+            table.description = get_description(self.options)
             bq.update_table(table, ["description"])
             logger.info("Ok.")
 
