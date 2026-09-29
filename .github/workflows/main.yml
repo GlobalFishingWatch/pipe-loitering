@@ -33,7 +33,7 @@ jobs:
         python-version: ["3.12", "3.13"]
     env:
       VENV: .venv
-      PACKAGE: loitering
+      PACKAGE: pipe_loitering
 
     steps:
       - uses: actions/checkout@v4
