@@ -8,7 +8,7 @@ DOCKER_CI_TEST_SERVICE:=test
 GCP_PROJECT:=world-fishing-827
 GCP_DOCKER_VOLUME:=gcp
 
-sources = loitering
+sources = pipe_loitering
 
 # ---------------------
 # DOCKER
