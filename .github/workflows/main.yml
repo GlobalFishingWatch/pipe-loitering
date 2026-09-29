@@ -24,7 +24,7 @@ jobs:
         run: flake8 --count
 
   tests:
-    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    name: tests - Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -66,6 +66,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   tests-in-docker:
+    name: tests - Python 3.12 on Docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
