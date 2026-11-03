@@ -58,6 +58,7 @@ class LoiteringPipeline:
     def __init__(self, options):
         pipeline = Pipeline(
             unparsed_args=options.unknown_unparsed_args,
+            labels=options.labels,
             **options.unknown_parsed_args
         )
 
@@ -108,8 +109,9 @@ class LoiteringPipeline:
                 partitioning_field="loitering_end_timestamp",
                 start_date=self.start_date,
                 end_date=self.end_date,
-            )
-        )
+            ),
+            job_config=bigquery.QueryJobConfig(labels=self.options.labels),
+        ).result()
 
         result = self.pipeline.run()
         result.wait_until_finish()
